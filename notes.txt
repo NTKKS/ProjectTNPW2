@@ -35,3 +35,9 @@ express-session;express-flash -
 
 after restart:
 run devStart - npm run devStart
+
+Git & Heroku:
+git add .
+git commit -m "message"
+git push
+git push heroku master

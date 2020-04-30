@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const authorSchema = new mongoose.Schema({
+    /*
     id: {
         type: id,
         unique:true,
@@ -19,6 +20,7 @@ const authorSchema = new mongoose.Schema({
         type: password,
         required:true,
     }
+    */
 })
 
 module.exports = mongoose.model('User', authorSchema)
