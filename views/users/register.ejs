@@ -1,0 +1,30 @@
+<head>
+    <title>Register page</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mb-4">Register page</h1>
+
+        <form action="/users/register" method="POST">
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" id="name" name="name" required class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required class="form-control">
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register</button>
+
+            <a href="/users/login" class="btn btn-secondary">Login</a>
+        <a href="/" class="btn btn-light btn-outline-info">Home</a>
+        </form>
+        
+    </div>
+</body>

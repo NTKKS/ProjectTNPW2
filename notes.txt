@@ -1,0 +1,37 @@
+
+//setup project
+npm init -y
+npm i express mongoose ejs
+npm i --save-dev nodemon //for refreshing page when I change files
+npm i --save-dev dotenv //to store environment variables
+
+express  - is my server
+express-ejs-layouts - to create layout for all pages (footer)
+mongoose - is my database
+ejs      - is my template language
+marked   - creates markdown to html (must be sanitized)
+(visit https://dillinger.io/ to learn markdown)
+slugify  - converts title to slug 
+method-override - to create delete method (GET/POST)
+dompurify - to sanitize html from malicious code
+jsdom     - to render html in node.js
+
+
+//scripts in package.json
+"devStart": "nodemon server.js" //nodemon run and refreshes server.js
+
+//views
+type ! to generate basic html structure
+ 
+<%= %> - EJS tag used to run js and output it to the page
+<% %>  - EJS tag used to run js without outputing
+<%- %> - renders raw HTML
+
+login info:
+rn we store this on server
+bcrypt - for enryption (hash)
+passport;passport-local - for logging in
+express-session;express-flash -
+
+after restart:
+run devStart - npm run devStart

@@ -1,0 +1,33 @@
+<head>
+    <title>Blog</title>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="mb-4">Blog Articles</h1>
+        
+        <a href="/articles/new" class="btn btn-success">New Article</a>
+        <a href="users/login" class="btn btn-link btn-outline-info float-right">Login</a>
+
+        <!--looping through all the articles-->
+        <%articles.forEach(article =>{%>
+        <div class="card mt-4">
+            <div class="card-body">
+                <h4 class="card-title"><%=article.title%></h4>
+                <div class="card-subtitle text-muted bm-2">
+                    <%=article.createdAt.toLocaleDateString()%>
+                </div>
+                <div class="card-text mb-2">
+                    <%=article.description%>
+                </div>
+                <a href="articles/<%=article.slug%>" class="btn btn-primary">Read More</a>
+                <a href="articles/edit/<%=article.id%>" class="btn btn-info">Edit</a>
+                <!--Delete button uses form instead of anchor due to website crawlers clicking all links. I also override the POST method with my DELETE _method-->
+                <form action="/articles/<%=article.id%>?_method=DELETE" method="POST" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+        <%})%>
+    </div>
+</body>
