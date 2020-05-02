@@ -6,10 +6,12 @@
     <div class="container">
         <h1 class="mb-4">Register page</h1>
 
+        <%-include('_messages')%>
+
         <form action="/users/register" method="POST">
             <div class="form-group">
                 <label for="name">Name</label>
-                <input type="text" id="name" name="name" required class="form-control">
+                <input type="text" id="name" name="name" value="<%= typeof name != 'undefined' ? name : '' %>" required class="form-control">
             </div>
             <div class="form-group">
                 <label for="email">Email</label>

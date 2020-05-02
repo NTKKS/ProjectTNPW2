@@ -1,92 +1,126 @@
-if(process.env.NODE_ENV !== 'production'){
+if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
 }
 
 const express = require('express')
 const router = express.Router()
 const bcrypt = require('bcrypt')
-const flash = require('express-flash')
-const session = require('express-session')
-const methoOverride = require('method-override')
-
-//user model
-const User = require('../models/user')
-
-//passport setup
 const passport = require('passport')
-const initializePassport = require('./../passport-config')
-initializePassport(
-    passport,
-    email => users.find(user => user.email === email),
-    id => users.find(user => user.id === id)
-)
+const methoOverride = require('method-override')
+const session = require('express-session')
+const flash = require('express-flash')
+const { forwardAuthenticated,ensureAuthenticated } = require('./../config/auth')
 
-const users = []
+//unit user model & users
+const User = require('./../models/user')
 
 //enables to access req.body parameters
 router.use(express.urlencoded({ extended: false }))
 
-router.use(flash())
 router.use(session({
     secret: process.env.SESSION_SECRET,
-    resave:false,
-    saveUninitialized:false
+    resave: false,
+    saveUninitialized: false
 }))
-router.use(passport.initialize())
-router.use(passport.session())
+
 router.use(methoOverride('_method'))
 
+//CRUD OPERATIONS////////////////////////////////////////////////
+
+//get all users
+router.get ('/', async (req,res) => {
+    let users = await User.find()
+    res.json(users)
+    //console.log(req.user)
+    //console.log(req.isAuthenticated())
+})
+
 //login route
-router.get('/login', checkNotAuthenticated, (req, res) => {
+router.get('/login', (req, res) => {
     res.render('users/login')
 })
 
 //register route
-router.get('/register', checkNotAuthenticated, (req, res) => {
+router.get('/register', (req, res) => {
     res.render('users/register')
 })
 
 //register handler
-router.post('/register', checkNotAuthenticated, async (req, res) => {
-    try {
-        const hashedPassword = await bcrypt.hash(req.body.password, 10)
-        users.push({
-            id: Date.now().toString(),
-            name: req.body.name,
-            email: req.body.email,
-            password: hashedPassword
-        })
-        res.redirect('./login')
-    } catch{
-        res.redirect('./register')
+router.post('/register', (req, res) => {
+    const { name, email, password } = req.body
+    //message setup
+    let errors = []
+    if (!name || !email || !password) {
+      errors.push({ msg: 'Please enter all fields' })
     }
-})
-
+    /*
+    if (password.length < 6) {
+      errors.push({ msg: 'Password must be at least 6 characters' })
+    }
+    */
+    if (errors.length > 0) {
+      res.render('users/register', {
+        errors,
+        name,
+        email,
+        password
+      })
+    } else {
+      //look if email already exist
+      User.findOne({ email: email }).then(user => {
+        if (user) {
+          errors.push({ msg: `Email: ${email} is already registered`})
+          res.render('users/register', {
+            errors,
+            name,
+            email,
+            password
+          })
+        } else {
+          //create new user
+          const newUser = new User({
+            name,
+            email,
+            password
+          });
+          //generate bcrypt hash passwort
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
+              if (err) throw err;
+              newUser.password = hash;
+              //save new user
+              newUser
+                .save()
+                .then(user => {
+                  req.flash(
+                    'success_msg',
+                    'You are now registered and can log in'
+                  );
+                  res.redirect('/users/login');
+                })
+                .catch(err => console.log(err));
+            });
+          });
+        }
+      });
+    }
+  });
+  
 //login handler
-router.post('/login', checkNotAuthenticated, passport.authenticate('local',{
+router.post('/login', (req, res, next) => {
+  passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect:'./login',
-    failureFlash:true
-}))
-//logout handler
-router.delete('/logout', checkAuthenticated, (req,res) => {
-req.logOut()
-res.redirect('/login')
+    failureRedirect: '/users/login',
+    failureFlash: true
+  })(req, res, next);
 })
 
-//is user logged?
-function checkAuthenticated(req,res,next){
-    if(req.isAuthenticated()){
-        return next()
-    }
-    res.redirect('./login')
-}
-//is user not logged?
-function checkNotAuthenticated(req,res,next){
-    if(req.isAuthenticated()){
-        return res.redirect('/')
-    }
-    next()
-}
+
+//logout handler
+router.delete('/logout', (req, res) => {
+    req.logOut()
+    req.flash('success_mgs','You are logged out')
+    res.redirect('/users/login')
+})
 
 module.exports = router

@@ -1,33 +1,40 @@
 const express = require('express')
 let Article = require('./../models/article')
 const router = express.Router()
+const { forwardAuthenticated,ensureAuthenticated } = require('./../config/auth')
 
 //new post page route
-router.get('/new', (req, res) => {
+router.get('/new',ensureAuthenticated, (req, res) => {
     res.render('articles/new', { article: new Article() })
 })
 
 //edit post page route
-router.get('/edit/:id', async (req, res) => {
+router.get('/edit/:id',ensureAuthenticated, async (req, res) => {
     const article = await Article.findById(req.params.id)
     res.render('articles/edit', { article: article })
 })
 
-//route to specific article (using slug instead of id)
+//get all articles
+router.get ('/', async (req,res) => {
+    let articles = await Article.find()
+    res.json(articles)
+})
+
+//GET specific article (using slug instead of id)
 router.get('/:slug', async (req, res) => {
     const article = await Article.findOne({ slug: req.params.slug })
     if (article == null) res.redirect('/')
     res.render('articles/show', { article: article })
 })
 
-//post request handler
-router.post('/', async (req, res, next) => {
+//POST request handler (new article)
+router.post('/', ensureAuthenticated, async (req, res, next) => {
     req.article = new Article()
     next()
 }, saveArticleAndRedirect('new'))
 
-//PUT route
-router.put('/:id', async (req, res, next) => {
+//PUT route (edit article)
+router.put('/:id',ensureAuthenticated, async (req, res, next) => {
     try {
         req.article = await Article.findById(req.params.id)
         next()
@@ -36,8 +43,8 @@ router.put('/:id', async (req, res, next) => {
     }
 }, saveArticleAndRedirect('edit'))
 
-//delete route
-router.delete('/:id', async (req, res) => {
+//DELETE route
+router.delete('/:id',ensureAuthenticated, async (req, res) => {
     await Article.findByIdAndDelete(req.params.id)
     res.redirect('/')
 })

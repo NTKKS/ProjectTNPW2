@@ -3,11 +3,32 @@
 </head>
 
 <body>
+
     <div class="container">
         <h1 class="mb-4">Blog Articles</h1>
-        
-        <a href="/articles/new" class="btn btn-success">New Article</a>
-        <a href="users/login" class="btn btn-link btn-outline-info float-right">Login</a>
+
+        <div class="row">
+
+            <div class="col align-self-start">
+                <a href="/articles/new" class="btn btn-success">New Article</a>
+            </div>
+
+            <div class="col d-flex justify-content-end">
+
+                <% if(typeof user != 'undefined') { %>
+                    <div class="navbar">
+                        <p class="m-0">Logged user: <strong><%=user.name%></strong></p>
+                    </div>
+                    <form action="/users/logout?_method=DELETE" method="POST">
+                    <button type="submit" class="btn btn-danger">Logout</button>
+                    </form>
+                <% }else{ %>
+                    <a href="users/login" class="btn btn-link btn-outline-info">Login</a>
+                <% } %>
+
+            </div>
+
+        </div>
 
         <!--looping through all the articles-->
         <%articles.forEach(article =>{%>
@@ -21,11 +42,13 @@
                     <%=article.description%>
                 </div>
                 <a href="articles/<%=article.slug%>" class="btn btn-primary">Read More</a>
-                <a href="articles/edit/<%=article.id%>" class="btn btn-info">Edit</a>
-                <!--Delete button uses form instead of anchor due to website crawlers clicking all links. I also override the POST method with my DELETE _method-->
-                <form action="/articles/<%=article.id%>?_method=DELETE" method="POST" class="d-inline">
-                    <button type="submit" class="btn btn-danger">Delete</button>
-                </form>
+
+                <% if(typeof user != 'undefined') { %>
+                    <a href="articles/edit/<%=article.id%>" class="btn btn-info">Edit</a>
+                    <form action="/articles/<%=article.id%>?_method=DELETE" method="POST" class="d-inline">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                <% }%>
             </div>
         </div>
         <%})%>
