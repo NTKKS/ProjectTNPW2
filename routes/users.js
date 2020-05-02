@@ -120,7 +120,7 @@ router.post('/login', (req, res, next) => {
 router.delete('/logout', (req, res) => {
     req.logOut()
     req.flash('success_mgs','You are logged out')
-    res.redirect('/users/login')
+    res.redirect('/')
 })
 
 module.exports = router

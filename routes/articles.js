@@ -11,7 +11,13 @@ router.get('/new',ensureAuthenticated, (req, res) => {
 //edit post page route
 router.get('/edit/:id',ensureAuthenticated, async (req, res) => {
     const article = await Article.findById(req.params.id)
-    res.render('articles/edit', { article: article })
+    if(req.user.id == article.author) {
+        res.render('articles/edit', { article: article })
+    }else{
+        req.flash('error_msg', 'You are not authorized');
+        req.logOut()
+        res.redirect('/users/login')
+    }
 })
 
 //get all articles
@@ -56,6 +62,7 @@ function saveArticleAndRedirect(path) {
         article.title = req.body.title
         article.description = req.body.description
         article.markdown = req.body.markdown
+        article.author = req.user.id
         //save new article to database
         try {
             article = await article.save()

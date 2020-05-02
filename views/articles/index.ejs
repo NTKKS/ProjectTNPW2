@@ -4,7 +4,7 @@
 
 <body>
 
-    <div class="container">
+    <div class="container ">
         <h1 class="mb-4">Blog Articles</h1>
 
         <div class="row">
@@ -43,7 +43,7 @@
                 </div>
                 <a href="articles/<%=article.slug%>" class="btn btn-primary">Read More</a>
 
-                <% if(typeof user != 'undefined') { %>
+                <% if(typeof user != 'undefined' && (article.author == user.id)) { %>
                     <a href="articles/edit/<%=article.id%>" class="btn btn-info">Edit</a>
                     <form action="/articles/<%=article.id%>?_method=DELETE" method="POST" class="d-inline">
                         <button type="submit" class="btn btn-danger">Delete</button>
