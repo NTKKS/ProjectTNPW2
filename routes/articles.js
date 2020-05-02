@@ -30,7 +30,7 @@ router.get ('/', async (req,res) => {
 router.get('/:slug', async (req, res) => {
     const article = await Article.findOne({ slug: req.params.slug })
     if (article == null) res.redirect('/')
-    res.render('articles/show', { article: article })
+    res.render('articles/show', { article: article, user: req.user })
 })
 
 //POST request handler (new article)
@@ -63,6 +63,7 @@ function saveArticleAndRedirect(path) {
         article.description = req.body.description
         article.markdown = req.body.markdown
         article.author = req.user.id
+        article.authorName = req.user.name
         //save new article to database
         try {
             article = await article.save()

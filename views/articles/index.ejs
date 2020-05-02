@@ -4,7 +4,7 @@
 
 <body>
 
-    <div class="container ">
+    <div class="container mb-4">
         <h1 class="mb-4">Blog Articles</h1>
 
         <div class="row">
@@ -36,7 +36,7 @@
             <div class="card-body">
                 <h4 class="card-title"><%=article.title%></h4>
                 <div class="card-subtitle text-muted bm-2">
-                    <%=article.createdAt.toLocaleDateString()%>
+                    <p>Posted by: <%=article.authorName%><br><%=article.createdAt.toLocaleDateString()%></p>
                 </div>
                 <div class="card-text mb-2">
                     <%=article.description%>

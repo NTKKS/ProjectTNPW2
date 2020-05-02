@@ -10,6 +10,9 @@
         <a href="/" class="btn btn-secondary">All articles</a>
         <% if(typeof user != 'undefined' && (article.author == user.id)) { %>
             <a href="/articles/edit/<%=article.id%>" class="btn btn-info">Edit</a>
+            <form action="/articles/<%=article.id%>?_method=DELETE" method="POST" class="d-inline">
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
             <% }%>
         <div class="mt-4">
             <%-article.sanitizedHtml%> 

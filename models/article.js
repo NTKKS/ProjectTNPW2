@@ -35,6 +35,9 @@ const articleSchema = new mongoose.Schema({
     },
     author: {
         type: String
+    },
+    authorName: {
+        type: String
     }
 })
 
