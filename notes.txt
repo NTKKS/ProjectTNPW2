@@ -15,6 +15,7 @@ slugify  - converts title to slug
 method-override - to create delete method (GET/POST)
 dompurify - to sanitize html from malicious code
 jsdom     - to render html in node.js
+@hapi/joi - for validation
 
 
 //scripts in package.json

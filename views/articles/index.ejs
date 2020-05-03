@@ -16,7 +16,7 @@
             <div class="col d-flex justify-content-end">
 
                 <% if(typeof user != 'undefined') { %>
-                    <div class="navbar">
+                    <div class="mr-3 mt-2">
                         <p class="m-0">Logged user: <strong><%=user.name%></strong></p>
                     </div>
                     <form action="/users/logout?_method=DELETE" method="POST">

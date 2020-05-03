@@ -10,6 +10,7 @@ const methoOverride = require('method-override')
 const session = require('express-session')
 const flash = require('express-flash')
 const { forwardAuthenticated,ensureAuthenticated } = require('./../config/auth')
+const {registerValidation,loginValidation} = require('./../config/validation')
 
 //unit user model & users
 const User = require('./../models/user')
@@ -47,9 +48,12 @@ router.get('/register', (req, res) => {
 
 //register handler
 router.post('/register', (req, res) => {
-    const { name, email, password } = req.body
-    //message setup
     let errors = []
+    const { name, email, password } = req.body
+    //validate data
+    const {error} = registerValidation(req.body)
+    if(error) errors.push({ msg: error.details[0].message })
+    //message setup
     if (!name || !email || !password) {
       errors.push({ msg: 'Please enter all fields' })
     }
